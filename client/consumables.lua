@@ -141,6 +141,15 @@ function AlienEffect()
     StopScreenEffect("DrugsMichaelAliensFightOut")
 end
 
+function AddArmor()
+    local a = 15
+    while a > 0 do
+        Wait(math.random(750, 1150))
+        a = a - 1
+        AddArmourToPed(PlayerPedId(), 1)
+    end
+end
+
 -- Events
 
 RegisterNetEvent('consumables:client:Eat', function(itemName)
@@ -462,3 +471,127 @@ CreateThread(function()
         end
     end
 end)
+
+RegisterNetEvent('consumables:client:setPedDrunk', function(shake)
+    local playerPed = PlayerPedId()
+        Citizen.Wait(650)
+        SetPedMotionBlur(playerPed, true)
+        SetTimecycleModifier("spectator3")
+        SetPedMovementClipset(playerPed, "move_m@hobo@a", true)
+        SetPedIsDrunk(playerPed, true)
+        ShakeGameplayCam("DRUNK_SHAKE", shake)
+        Citizen.Wait(60000)
+        SetPedMoveRateOverride(playerPed, 1.0)
+        SetRunSprintMultiplierForPlayer(playerPed, 1.0)
+        SetPedIsDrunk(playerPed, false)        
+        SetPedMotionBlur(playerPed, false)
+        ResetPedMovementClipset(playerPed)
+        ShakeGameplayCam("DRUNK_SHAKE", 0.0)
+        SetTimecycleModifierStrength(0.0)
+    end)
+
+    RegisterNetEvent('consumables:client:slushy', function(itemName)
+        TriggerEvent('animations:client:EmoteCommandStart', {"cup"})
+        QBCore.Functions.Progressbar("drink_something", "Drinking Slushy...", 3500, false, true, {
+            disableMovement = false,
+            disableCarMovement = false,
+            disableMouse = false,
+            disableCombat = true,
+        }, {}, {}, {}, function() -- Done
+            ClearPedTasks(PlayerPedId())
+            TriggerEvent("inventory:client:ItemBox", QBCore.Shared.Items[itemName], "remove")
+            TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+            AddArmor(3)
+            TriggerServerEvent("QBCore:Server:SetMetaData", "thirst", QBCore.Functions.GetPlayerData().metadata["thirst"] + ConsumeablesSlushy[itemName])
+            TriggerServerEvent('hud:server:RelieveStress', math.random(2, 4))
+        end)
+    end)
+    
+    local function RunFast()
+        local startStamina = 3
+    
+        SetRunSprintMultiplierForPlayer(PlayerId(), 1.2)
+        while startStamina > 0 do
+            Wait(1000)
+            startStamina = startStamina - 1
+            --RestorePlayerStamina(PlayerId(), 1.0)
+        end
+        startStamina = 0
+        SetRunSprintMultiplierForPlayer(PlayerId(), 1.0)
+    end
+    
+    RegisterNetEvent('consumables:client:EatSuperDonut', function(itemName)
+        TriggerEvent('animations:client:EmoteCommandStart', {"donut"})
+        QBCore.Functions.Progressbar("eat_something", "Eating..", 5000, false, true, {
+            disableMovement = false,
+            disableCarMovement = false,
+            disableMouse = false,
+            disableCombat = true,
+        }, {}, {}, {}, function() -- Done
+            ClearPedTasks(PlayerPedId())
+            TriggerEvent("inventory:client:ItemBox", QBCore.Shared.Items[itemName], "remove")
+            TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+            RunFast()
+            TriggerServerEvent("QBCore:Server:SetMetaData", "hunger", QBCore.Functions.GetPlayerData().metadata["hunger"] + ConsumeablesEatSuperDonut[itemName])
+            TriggerServerEvent('hud:server:RelieveStress', math.random(2, 8))
+        end)
+    end)
+    
+    local function BrainFreeze()
+        local startStamina = 3
+        ShakeGameplayCam('SMALL_EXPLOSION_SHAKE', 0.15)
+        SetRunSprintMultiplierForPlayer(PlayerId(), 1.5)
+        while startStamina > 0 do
+            Wait(2500)
+            ShakeGameplayCam('SMALL_EXPLOSION_SHAKE', 0.18)
+            startStamina = startStamina - 1
+            --RestorePlayerStamina(PlayerId(), 1.0)
+        end
+        startStamina = 0
+        ShakeGameplayCam('SMALL_EXPLOSION_SHAKE', 0.15)
+        SetRunSprintMultiplierForPlayer(PlayerId(), 1.0)
+    end
+    
+    RegisterNetEvent('consumables:client:EatIceCream', function(itemName)
+        TriggerEvent('animations:client:EmoteCommandStart', {"bowl"})
+        QBCore.Functions.Progressbar("eat_icecream", "Eating...", 5000, false, true, {
+            disableMovement = false,
+            disableCarMovement = false,
+            disableMouse = false,
+            disableCombat = true,
+        }, {}, {}, {}, function() -- Done
+            ClearPedTasks(PlayerPedId())
+            TriggerEvent("inventory:client:ItemBox", QBCore.Shared.Items[itemName], "remove")
+            TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+            BrainFreeze()
+            TriggerServerEvent("QBCore:Server:SetMetaData", "hunger", QBCore.Functions.GetPlayerData().metadata["hunger"] + ConsumeablesEatIceCream[itemName])
+            TriggerServerEvent('hud:server:GainStress', math.random(2, 5))
+        end)
+    end)
+    
+    local function GumBall()
+        local startStamina = 3
+        SetRunSprintMultiplierForPlayer(PlayerId(), 1.2)
+        while startStamina > 0 do
+            Wait(500)
+            startStamina = startStamina - 1
+        end
+        startStamina = 0
+        SetRunSprintMultiplierForPlayer(PlayerId(), 1.0)
+    end
+    
+    RegisterNetEvent('consumables:client:EatGumBall', function(itemName)
+        TriggerEvent('animations:client:EmoteCommandStart', {"eat"})
+        QBCore.Functions.Progressbar("eat_gumball", "Eating...", 5000, false, true, {
+            disableMovement = false,
+            disableCarMovement = false,
+            disableMouse = false,
+            disableCombat = true,
+        }, {}, {}, {}, function() -- Done
+            ClearPedTasks(PlayerPedId())
+            TriggerEvent("inventory:client:ItemBox", QBCore.Shared.Items[itemName], "remove")
+            TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+            GumBall()
+            TriggerServerEvent("QBCore:Server:SetMetaData", "hunger", QBCore.Functions.GetPlayerData().metadata["hunger"] + ConsumeablesEatGumBall[itemName])
+        end)
+    end)
