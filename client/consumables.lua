@@ -196,8 +196,10 @@ RegisterNetEvent('consumables:client:DrinkAlcohol', function(itemName)
         alcoholCount = alcoholCount + 1
         if alcoholCount > 1 and alcoholCount < 4 then
             TriggerEvent("evidence:client:SetStatus", "alcohol", 200)
+            TriggerEvent('consumables:client:setPedDrunk', 1.5)
         elseif alcoholCount >= 4 then
             TriggerEvent("evidence:client:SetStatus", "heavyalcohol", 200)
+            TriggerEvent('consumables:client:setPedDrunk', 3.5)
         end
 
     end, function() -- Cancel
@@ -480,7 +482,7 @@ RegisterNetEvent('consumables:client:setPedDrunk', function(shake)
         SetPedMovementClipset(playerPed, "move_m@hobo@a", true)
         SetPedIsDrunk(playerPed, true)
         ShakeGameplayCam("DRUNK_SHAKE", shake)
-        Citizen.Wait(60000)
+        Citizen.Wait(120000)
         SetPedMoveRateOverride(playerPed, 1.0)
         SetRunSprintMultiplierForPlayer(playerPed, 1.0)
         SetPedIsDrunk(playerPed, false)        
@@ -595,46 +597,3 @@ RegisterNetEvent('consumables:client:setPedDrunk', function(shake)
             TriggerServerEvent("QBCore:Server:SetMetaData", "hunger", QBCore.Functions.GetPlayerData().metadata["hunger"] + ConsumeablesEatGumBall[itemName])
         end)
     end)
-
-    function DrunkEffect()
-
-        local playerPed = PlayerPedId()
-    
-        Citizen.Wait(200)
-        RequestAnimSet("move_m@drunk@slightlydrunk")
-    
-        while not HasAnimSetLoaded("move_m@drunk@slightlydrunk") do
-            Citizen.Wait(0)
-        end
-    
-        SetPedMovementClipset(playerPed, "move_m@drunk@slightlydrunk", true)
-    
-        SetTimecycleModifier("spectator5")
-        SetPedMotionBlur(playerPed, true)
-        SetPedIsDrunk(playerPed, true)
-    
-        Citizen.Wait(60000) -- Time to wait before setting ped to sober
-    
-        Reality()
-    end
-    
-    function Reality()
-    
-        Citizen.CreateThread(function()
-      
-          local playerPed = GetPlayerPed(-1)
-      
-          DoScreenFadeOut(800)
-          Wait(1000)
-      
-          ClearTimecycleModifier()
-          ResetScenarioTypesEnabled()
-          ResetPedMovementClipset(playerPed, 0)
-          SetPedIsDrunk(playerPed, false)
-          SetPedMotionBlur(playerPed, false)
-      
-          DoScreenFadeIn(800)
-      
-        end)
-      
-    end
