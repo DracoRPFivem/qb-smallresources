@@ -3,10 +3,10 @@
 CreateThread(function()
     while true do
         -- This is the Application ID (Replace this with you own)
-	SetDiscordAppId()
+	SetDiscordAppId(990462175934038056)
 
         -- Here you will have to put the image name for the "large" icon.
-	SetDiscordRichPresenceAsset('logo_name')
+	SetDiscordRichPresenceAsset('dracorp512')
         
         -- (11-11-2018) New Natives:
 
@@ -30,8 +30,8 @@ CreateThread(function()
             First paramater is the button index (0 or 1), second is the title and 
             last is the url (this has to start with "fivem://connect/" or "https://") 
         ]]--
-        SetDiscordRichPresenceAction(0, "First Button!", "fivem://connect/localhost:30120")
-        SetDiscordRichPresenceAction(1, "Second Button!", "fivem://connect/localhost:30120")
+        SetDiscordRichPresenceAction(0, "First Button!", "discord.gg/xJXs9jbAwZ")
+        SetDiscordRichPresenceAction(1, "Second Button!", "discord.gg/xJXs9jbAwZ")
 
         -- It updates every minute just in case.
 	Wait(60000)
